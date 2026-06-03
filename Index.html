@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🦫 CapyDream AI — Нейросонник</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 20px;
+            color: #eee;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(2px 2px at 30% 60%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2px 2px at 70% 40%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(2px 2px at 20% 90%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,0.4), transparent);
+            pointer-events: none;
+            z-index: 0;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 520px;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(20,20,40,0.98), rgba(15,15,35,0.98));
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255,165,0,0.15);
+            border: 1px solid rgba(255,165,0,0.2);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffa500;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255,165,0,0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .capy-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .capy {
+            font-size: 5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            filter: drop-shadow(0 10px 20px rgba(255,165,0,0.4));
+            transition: transform 0.3s;
+        }
+
+        .capy:hover { transform: scale(1.1); }
+        .capy:active { transform: scale(0.9); }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: sparkleUp 1.2s ease-out forwards;
+        }
+
+        @keyframes sparkleUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(0.3); }
+        }
+
+        .input-group { margin-bottom: 15px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(26,26,46,0.8);
+            color: #eee;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ffa500;
+            box-shadow: 0 0 20px rgba(255,165,0,0.2);
+        }
+
+        input::placeholder { color: #555; }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+            color: #1a1a2e;
+            box-shadow: 0 8px 25px rgba(255,140,0,0.4);
+            font-size: 1.1rem;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 12px 35px rgba(255,140,0,0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #1a1a2e;
+            box-shadow: 0 8px 25px rgba(255,215,0,0.3);
+        }
+
+        .result {
+            background: linear-gradient(135deg, rgba(26,26,46,0.9), rgba(20,20,40,0.9));
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 80px;
+            border: 1px solid rgba(255,165,0,0.15);
+            position: relative;
+        }
+
+        .result::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg, #ffa500, transparent);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .result h3 {
+            color: #ffa500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-text {
+            color: #ccc;
+            line-height: 1.8;
+            animation: fadeIn 0.5s ease-out;
+            white-space: pre-line;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .vip-info {
+            background: rgba(255,165,0,0.05);
+            border: 1px solid rgba(255,165,0,0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .vip-info h3 {
+            color: #ffa500;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .vip-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .vip-feature {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .feature-yes { color: #4CAF50; font-weight: bold; }
+        .feature-no { color: #666; }
+
+        .donate-section {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+
+        .donate-section h3 {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .sums {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sums button {
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(26,26,46,0.8);
+            color: #eee;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .sums button:hover {
+            background: rgba(255,165,0,0.2);
+            border-color: rgba(255,165,0,0.4);
+        }
+
+        .donate-note {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            margin-top: 12px;
+            line-height: 1.6;
+            padding: 10px;
+            background: rgba(255,165,0,0.05);
+            border-radius: 10px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #0a0a1a);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,215,0,0.3);
+            animation: scaleIn 0.3s;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-emoji {
+            font-size: 5rem;
+            animation: float 1s infinite;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 400px) {
+            .container { padding: 20px 15px; }
+            h1 { font-size: 1.8rem; }
+            .capy { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦫 CapyDream AI</h1>
+        <div class="subtitle">Нейросонник с искусственным интеллектом</div>
+
+        <div class="capy-container" id="capyContainer">
+            <div class="capy" id="capyEmoji" title="Нейрокапибара">🧠🦫</div>
+        </div>
+
+        <div class="input-group">
+            <label>🌙 Опишите свой сон (слово или фразу)</label>
+            <input type="text" id="dreamInput" placeholder="например: летающий апельсин" maxlength="60">
+        </div>
+
+        <button class="btn btn-primary" id="interpretBtn">
+            ✨ Нейротолкование
+        </button>
+
+        <div class="result" id="resultBox">
+            <h3><span class="ai-badge">AI</span> Толкование</h3>
+            <div class="result-text" id="resultText">
+                Опишите свой сон, и нейрокапибара создаст уникальное толкование с помощью искусственного интеллекта.
+            </div>
+        </div>
+
+        <div class="vip-info" id="vipInfo">
+            <h3>👑 VIP-нейросеть</h3>
+            <div class="vip-features">
+                <div class="vip-feature"><span>🧠 Нейросеть</span><span class="feature-yes" id="fNet">Базовая</span></div>
+                <div class="vip-feature"><span>📖 Разбор</span><span class="feature-yes" id="fDetail">Краткий</span></div>
+                <div class="vip-feature"><span>🌙 Лунный совет</span><span class="feature-no" id="fMoon">❌</span></div>
+                <div class="vip-feature"><span>💾 История</span><span class="feature-no" id="fHistory">❌</span></div>
+                <div class="vip-feature"><span>🎨 Стикеры</span><span class="feature-no" id="fStickers">❌</span></div>
+            </div>
+            <button class="btn btn-gold" id="vipBtn">💎 Активировать VIP (от 20 ₽)</button>
+        </div>
+
+        <div class="donate-section">
+            <h3>💛 Поддержать разработку нейросети</h3>
+            <div class="sums">
+                <button data-amount="20">20 ₽</button>
+                <button data-amount="50">50 ₽</button>
+                <button data-amount="100">100 ₽</button>
+                <button data-amount="500">500 ₽</button>
+            </div>
+            <div class="donate-note">
+                💛 Поддержка открывает полную нейросеть. Капибара учится на каждом донате!
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="thanksModal">
+        <div class="modal-content">
+            <div class="modal-emoji">🥹🧠🦫</div>
+            <h3 style="color:#ffd700;">Нейросеть улучшена!</h3>
+            <p style="color:#aaa;">VIP-режим активирован навсегда</p>
+            <button class="btn btn-gold" id="closeThanks" style="margin-top:15px;">Понятно!</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ============ НЕЙРОСЕТЬ CAPYDREAM AI ============
+            class DreamAI {
+                constructor() {
+                    // База знаний: слова и их смыслы
+                    this.knowledgeBase = {
+                        // Позитивные образы
+                        positive: {
+                            words: ['апельсин', 'солнце', 'цветок', 'звезда', 'радуга', 'конфета', 'подарок', 'улыбка', 'золото', 'сад', 'море', 'небо', 'птица', 'бабочка'],
+                            meanings: ['радость', 'счастье', 'гармония', 'успех', 'любовь', 'изобилие'],
+                            predictions: [
+                                'Скоро вы получите приятный сюрприз.',
+                                'Ваши старания будут вознаграждены.',
+                                'Впереди светлая полоса в жизни.',
+                                'Кто-то думает о вас с теплотой.'
+                            ]
+                        },
+                        // Водные образы
+                        water: {
+                            words: ['вода', 'река', 'океан', 'дождь', 'озеро', 'волна', 'ручей', 'море', 'капля', 'потоп'],
+                            meanings: ['эмоции', 'подсознание', 'очищение', 'перемены'],
+                            predictions: [
+                                'Вас ждёт эмоциональное обновление.',
+                                'Пришло время отпустить старые обиды.',
+                                'Ваши чувства скоро найдут выход.',
+                                'Интуиция подскажет верный путь.'
+                            ]
+                        },
+                        // Полет/свобода
+                        flight: {
+                            words: ['полёт', 'летать', 'крылья', 'небо', 'птица', 'самолёт', 'облако', 'ветер', 'воздух'],
+                            meanings: ['свобода', 'мечты', 'стремление', 'новые горизонты'],
+                            predictions: [
+                                'Вы готовы к большим переменам.',
+                                'Страхи отступают — вперёд к мечте!',
+                                'Скоро откроются новые возможности.',
+                                'Ваш творческий потенциал на пике.'
+                            ]
+                        },
+                        // Опасность/страх
+                        danger: {
+                            words: ['крыса', 'змея', 'темнота', 'чудовище', 'падение', 'огонь', 'война', 'оружие', 'кровь', 'смерть', 'болезнь'],
+                            meanings: ['предупреждение', 'страх', 'скрытая угроза', 'тревога'],
+                            predictions: [
+                                'Будьте внимательны к окружению.',
+                                'Интуиция предупреждает о возможных рисках.',
+                                'Не доверяйте всем подряд в ближайшее время.',
+                                'Этот сон — сигнал пересмотреть свои страхи.'
+                            ]
+                        },
+                        // Дом/семья
+                        home: {
+                            words: ['дом', 'семья', 'мама', 'папа', 'ребёнок', 'квартира', 'комната', 'кухня', 'дверь', 'окно'],
+                            meanings: ['защита', 'корни', 'семейные ценности', 'уют'],
+                            predictions: [
+                                'В семье скоро будет радостное событие.',
+                                'Позвоните родным — они скучают.',
+                                'Ваш дом — ваша крепость. Берегите его.',
+                                'Возможно, стоит навестить родителей.'
+                            ]
+                        },
+                        // Животные
+                        animals: {
+                            words: ['кошка', 'собака', 'капибара', 'тигр', 'медведь', 'волк', 'лиса', 'заяц', 'слон', 'рыба'],
+                            meanings: ['инстинкты', 'дружба', 'мудрость', 'сила'],
+                            predictions: [
+                                'Рядом есть верный друг.',
+                                'Доверяйте своей внутренней силе.',
+                                'Природа посылает вам знак.',
+                                'Животное во сне — отражение вашего характера.'
+                            ]
+                        }
+                    };
+
+                    // Мудрые фразы капибары
+                    this.capyWisdom = [
+                        'Капибара советует: не торопитесь, всё идёт своим чередом.',
+                        'Мудрая капибара говорит: цените момент, в котором находитесь.',
+                        'Капибара напоминает: иногда лучший выбор — это отдых.',
+                        'По мнению капибары: дружба и тепло — главные сокровища.',
+                        'Капибара шепчет: прислушайтесь к тишине внутри себя.',
+                        'Капибара знает: каждый сон — это ключ к самопознанию.',
+                        'Великая капибара советует: будьте как вода — мягкими, но сильными.',
+                        'Капибара уверена: завтра будет лучше, чем сегодня.',
+                        'Капибара рекомендует: обнимите близкого человека.',
+                        'Капибара говорит: сны сбываются у тех, кто в них верит.'
+                    ];
+
+                    // Лунные советы
+                    this.moonAdvice = [
+                        '🌙 Луна сейчас в фазе роста — отличное время для новых начинаний.',
+                        '🌙 Убывающая луна советует: завершите старые дела.',
+                        '🌙 Полнолуние приближается — будьте осторожны с решениями.',
+                        '🌙 Новолуние — идеальный момент загадать желание.',
+                        '🌙 Лунный календарь: сегодня день для размышлений и планирования.',
+                        '🌙 Луна в знаке воды — эмоции могут быть сильнее обычного.',
+                        '🌙 Энергия луны сегодня особенно сильна — медитируйте.',
+                        '🌙 Луна советует: проведите вечер в уютной обстановке.'
+                    ];
+                }
+
+                // Анализ текста: разбивка на слова, поиск совпадений
+                analyze(text) {
+                    const words = text.toLowerCase()
+                        .replace(/[^а-яёa-z\s]/g, '')
+                        .split(/\s+/)
+                        .filter(w => w.length > 1);
+
+                    let categories = [];
+                    let allFound = [];
+
+                    // Поиск по базе знаний
+                    for (let [category, data] of Object.entries(this.knowledgeBase)) {
+                        for (let word of words) {
+                            if (data.words.includes(word)) {
+                                categories.push(category);
+                                allFound.push({ word, category });
+                            }
+                        }
+                    }
+
+                    // Если ничего не найдено — общая категория
+                    if (categories.length === 0) {
+                        categories.push('general');
+                    }
+
+                    return { words, categories, allFound };
+                }
+
+                // Генерация толкования
+                interpret(text, isVip = false) {
+                    const analysis = this.analyze(text);
+                    let result = '';
+
+                    // Заголовок
+                    if (analysis.allFound.length > 0) {
+                        result += `🔍 Нейросеть нашла образы: ${analysis.allFound.map(f => f.word).join(', ')}.\n\n`;
+                    } else {
+                        result += '🔍 Нейросеть анализирует ваш уникальный сон...\n\n';
+                    }
+
+                    // Основное толкование
+                    result += this.generateMainInterpretation(analysis) + '\n';
+
+                    // VIP: дополнительный разбор
+                    if (isVip) {
+                        result += '\n' + this.generateVipInsight(analysis) + '\n';
+                        result += '\n' + this.getRandomElement(this.moonAdvice) + '\n';
+                    }
+
+                    // Мудрость капибары
+                    result += '\n🦫 ' + this.getRandomElement(this.capyWisdom);
+
+                    // VIP: бонус
+                    if (isVip) {
+                        result += '\n\n💎 VIP-совет: запишите этот сон в дневник — через месяц вы увидите, как он повлиял на вашу жизнь.';
+                    }
+
+                    return result;
+                }
+
+                generateMainInterpretation(analysis) {
+                    let parts = [];
+                    const categories = [...new Set(analysis.categories)];
+
+                    for (let cat of categories) {
+                        if (cat === 'general') {
+                            parts.push('Ваш сон уникален и не подходит под стандартные шаблоны.');
+                            parts.push('Это говорит о вашей индивидуальности и творческом мышлении.');
+                            parts.push('Подсознание пытается передать вам важное сообщение — прислушайтесь к интуиции.');
+                        } else if (this.knowledgeBase[cat]) {
+                            const data = this.knowledgeBase[cat];
+                            parts.push(`Сон связан с темой: ${data.meanings.join(', ')}.`);
+                            parts.push(this.getRandomElement(data.predictions));
+                        }
+                    }
+
+                    // Добавляем связки для плавности
+                    return parts.join(' ');
+                }
+
+                generateVipInsight(analysis) {
+                    const insights = [
+                        '🧠 Глубинный анализ: ваше подсознание активно обрабатывает недавние события. Этот сон — способ психики справиться с эмоциями.',
+                        '🧠 Нейросеть видит связь: возможно, в реальной жизни вы стоите перед выбором, и сон подсказывает решение.',
+                        '🧠 Анализ паттернов: такие сны часто снятся творческим людям в периоды вдохновения.',
+                        '🧠 Подсознание сигнализирует: обратите внимание на своё здоровье и режим сна.',
+                        '🧠 Нейроанализ: сон содержит архетипические образы, общие для многих культур.',
+                        '🧠 ИИ-интерпретация: этот сон может повториться, если вы не обратите внимание на его послание.'
+                    ];
+                    return this.getRandomElement(insights);
+                }
+
+                getRandomElement(arr) {
+                    return arr[Math.floor(Math.random() * arr.length)];
+                }
+
+                // Генерация уникального сна (если пользователь хочет случайный)
+                generateRandomDream() {
+                    const subjects = ['капибара', 'апельсин', 'звезда', 'вода', 'полёт', 'лес', 'луна', 'цветок'];
+                    const actions = ['летает', 'плывёт', 'танцует', 'светится', 'растёт', 'поёт'];
+                    const places = ['в небе', 'в океане', 'в лесу', 'на облаке', 'в космосе', 'в саду'];
+
+                    const subject = this.getRandomElement(subjects);
+                    const action = this.getRandomElement(actions);
+                    const place = this.getRandomElement(places);
+
+                    return `${subject} ${action} ${place}`;
+                }
+            }
+
+            // ============ ИНИЦИАЛИЗАЦИЯ ============
+            const ai = new DreamAI();
+            const dreamInput = document.getElementById('dreamInput');
+            const interpretBtn = document.getElementById('interpretBtn');
+            const resultText = document.getElementById('resultText');
+            const vipBtn = document.getElementById('vipBtn');
+            const capyEmoji = document.getElementById('capyEmoji');
+            const capyContainer = document.getElementById('capyContainer');
+            const thanksModal = document.getElementById('thanksModal');
+            const closeThanks = document.getElementById('closeThanks');
+
+            let isVip = localStorage.getItem('capydream_vip') === 'true';
+
+            // VIP-интерфейс
+            function updateVipUI() {
+                const fNet = document.getElementById('fNet');
+                const fDetail = document.getElementById('fDetail');
+                const fMoon = document.getElementById('fMoon');
+                const fHistory = document.getElementById('fHistory');
+                const fStickers = document.getElementById('fStickers');
+
+                if (isVip) {
+                    fNet.textContent = 'Продвинутая';
+                    fDetail.textContent = 'Глубинный';
+                    fMoon.textContent = '✅';
+                    fMoon.className = 'feature-yes';
+                    fHistory.textContent = '✅';
+                    fHistory.className = 'feature-yes';
+                    fStickers.textContent = '✅';
+                    fStickers.className = 'feature-yes';
+                    vipBtn.textContent = '👑 VIP активирован';
+                    vipBtn.disabled = true;
+                    capyEmoji.textContent = '👑🧠🦫';
+                } else {
+                    fNet.textContent = 'Базовая';
+                    fDetail.textContent = 'Краткий';
+                    fMoon.textContent = '❌';
+                    fMoon.className = 'feature-no';
+                    fHistory.textContent = '❌';
+                    fHistory.className = 'feature-no';
+                    fStickers.textContent = '❌';
+                    fStickers.className = 'feature-no';
+                    vipBtn.textContent = '💎 Активировать VIP (от 20 ₽)';
+                    vipBtn.disabled = false;
+                    capyEmoji.textContent = '🧠🦫';
+                }
+            }
+
+            // Толкование
+            interpretBtn.addEventListener('click', () => {
+                const text = dreamInput.value.trim();
+
+                if (!text) {
+                    // Если пусто — генерируем случайный сон
+                    const randomDream = ai.generateRandomDream();
+                    dreamInput.value = randomDream;
+                    resultText.textContent = '✨ Нейросеть заглянула в ваше подсознание и увидела: ' + randomDream + '\n\n';
+                    resultText.textContent += ai.interpret(randomDream, isVip);
+                    return;
+                }
+
+                // Эффект загрузки
+                resultText.textContent = '🧠 Нейросеть анализирует сон';
+                interpretBtn.disabled = true;
+
+                let dots = 0;
+                const loadingInterval = setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    resultText.textContent = '🧠 Нейросеть анализирует сон' + '.'.repeat(dots);
+                }, 400);
+
+                // Имитация обработки нейросетью
+                setTimeout(() => {
+                    clearInterval(loadingInterval);
+                    resultText.textContent = ai.interpret(text, isVip);
+                    interpretBtn.disabled = false;
+                }, 1500 + Math.random() * 1000);
+            });
+
+            // Enter
+            dreamInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') interpretBtn.click();
+            });
+
+            // Эффекты капибары
+            capyEmoji.addEventListener('click', (e) => {
+                for (let i = 0; i < 6; i++) {
+                    const spark = document.createElement('span');
+                    spark.textContent = ['✨', '💫', '⭐', '🧠', '💛', '🌟'][i];
+                    spark.className = 'sparkle';
+                    const rect = capyEmoji.getBoundingClientRect();
+                    spark.style.left = (e.clientX - rect.left + (Math.random() - 0.5) * 60) + 'px';
+                    spark.style.top = (e.clientY - rect.top + (Math.random() - 0.5) * 30) + 'px';
+                    spark.style.animationDuration = (0.8 + Math.random() * 1.2) + 's';
+                    capyContainer.appendChild(spark);
+                    setTimeout(() => spark.remove(), 1500);
+                }
+            });
+
+            // Донат = VIP
+            document.querySelectorAll('.sums button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const amount = this.dataset.amount;
+                    if (confirm(`Поддержать разработку нейросети на ${amount} ₽?`)) {
+                        isVip = true;
+                        localStorage.setItem('capydream_vip', 'true');
+                        updateVipUI();
+                        thanksModal.classList.remove('hidden');
+                        capyEmoji.textContent = '🥹🧠🦫';
+                        setTimeout(() => {
+                            capyEmoji.textContent = '👑🧠🦫';
+                        }, 2000);
+                    }
+                });
+            });
+
+            // VIP кнопка
+            vipBtn.addEventListener('click', () => {
+                document.querySelector('.sums button[data-amount="20"]').click();
+            });
+
+            // Закрытие модалки
+            closeThanks.addEventListener('click', () => {
+                thanksModal.classList.add('hidden');
+            });
+
+            thanksModal.addEventListener('click', (e) => {
+                if (e.target === thanksModal) thanksModal.classList.add('hidden');
+            });
+
+            // Старт
+            updateVipUI();
+        })();
+    </script>
+</body>
+</html>
